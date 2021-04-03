@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import './styles/App.scss'
 import MIDI from './lib/MIDI';
-import './App.scss';
+import Piano from './components/Piano';
 import { MIDInumberToNote, MIDInumberToFrequency } from './lib/helpers';
 
-const playSound = () => {
-  const audioContext = new window.AudioContext({
-    latencyHint: 'interactive',
-    sampleRate: 44100,
-  });
-  const oscillator = audioContext.createOscillator();
-  oscillator.type = 'square';
-  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); 
-  oscillator.connect(audioContext.destination);
-  const gainNode = audioContext.createGain();
-  // console.log({audioContext, oscillator, gainNode});
-}
 
 function App() {
   const MIDIRef = useRef(null);
   const [pressedKeys, setPressedKey] = useState([]);
+
+  const eventHandler = ({ device, a, b, type }) => {
+    if (type === 'note_on') {
+      const { value: MIDInumber } = a;
+      addKey(MIDInumber);
+    }
+    if (type === 'note_off') {
+      const { value: MIDInumber } = a;
+      removeKey(MIDInumber);
+    }
+  };
 
   useEffect(() => {
     MIDIRef.current = new MIDI(eventHandler);
@@ -57,31 +57,20 @@ function App() {
     })
   };
 
-  const eventHandler = ({ device, a, b, type }) => {
-    if (type === 'note_on') {
-      const { value: MIDInumber } = a;
-      addKey(MIDInumber);
-    }
-    if (type === 'note_off') {
-      const { value: MIDInumber } = a;
-      removeKey(MIDInumber);
-    }
-  };
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>MIDI</h1>
-        <div className='keys'>
-          {pressedKeys.map((key) => {
-            const { note, freq } = key;
-            return (
-              <div key={note} className='note'>
-                {note}
-              </div>
-            )
-          })}
-        </div>
-      </header>
+      <h1>MIDI</h1>
+      <Piano />
+      <div className='keys'>
+        {pressedKeys.map((key) => {
+          const { note, freq } = key;
+          return (
+            <div key={note} className='note'>
+              {note}
+            </div>
+          )
+        })}
+      </div>
     </div>
   );
 }
