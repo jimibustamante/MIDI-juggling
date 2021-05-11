@@ -11,6 +11,9 @@ export const PianoContainer = styled.div`
   > * {
     flex-shrink: 0;
     box-sizing: border-box;
+    &.pressed {
+      background: #fc8621 !important;
+    }
     &.B, &.D:not(.black), &.E:not(.black), &.G:not(.black), &.A:not(.black) {
       margin-left: calc(var(--black-width) * -1);
     }

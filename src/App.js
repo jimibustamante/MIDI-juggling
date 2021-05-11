@@ -60,7 +60,7 @@ function App() {
   return (
     <div className="App">
       <h1>MIDI</h1>
-      <Piano />
+      <Piano pressedKeys={pressedKeys} />
       <div className='keys'>
         {pressedKeys.map((key) => {
           const { note, freq } = key;
