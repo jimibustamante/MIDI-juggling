@@ -11,9 +11,9 @@ export const PianoContainer = styled.div`
   > * {
     flex-shrink: 0;
     box-sizing: border-box;
-    &.pressed {
+    /* &.pressed {
       background: #fc8621 !important;
-    }
+    } */
     &.B, &.D:not(.black), &.E:not(.black), &.G:not(.black), &.A:not(.black) {
       margin-left: calc(var(--black-width) * -1);
     }
@@ -41,4 +41,14 @@ export const PianoContainer = styled.div`
     box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -5px 2px 3px rgba(0,0,0,0.6) inset,0 2px 4px rgba(0,0,0,0.5);
     background:linear-gradient(45deg,#222 0%,#555 100%)
   }
+`;
+
+export const PianoKey = styled.div`
+  ${props => {
+    if (props.pressed) {
+      return (
+        'background: #fc8621 !important;'
+      )
+    }
+  }}
 `;

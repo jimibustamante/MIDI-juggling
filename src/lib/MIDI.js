@@ -9,7 +9,7 @@ class MIDI {
 
   async initialize () {
     try {
-      console.log('initialize MIDI')
+      console.debug('initialize MIDI')
       const access = await navigator.requestMIDIAccess();
       if (!access) throw new Error();
       const inputs = access.inputs.values();
