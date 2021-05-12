@@ -1,21 +1,29 @@
 import MIDIEvent from './MIDIEvent';
 
 class MIDI {
-  constructor(onEvent = () => {}) {
+  constructor(
+    onEvent = () => {},
+    onInputsReady = () => {},
+    onOutputsReady = () => {}
+  ) {
     this.inputs = {};
     this.outputs = {};
     this.onEvent = onEvent;
+    this.onInputsReady = onInputsReady;
+    this.onOutputsReady = onOutputsReady;
   }
 
   async initialize () {
     try {
-      console.debug('initialize MIDI')
+      console.debug('initialize MIDI');
       const access = await navigator.requestMIDIAccess();
       if (!access) throw new Error();
       const inputs = access.inputs.values();
       const outputs = access.outputs.values();
       for (const input of inputs) this.initializeInput(input);
       for (const output of outputs) this.initializeOutput(output);
+      this.onInputsReady(this.inputs);
+      this.onOutputsReady(this.outputs);
       access.onstatechange = ({ port }) => {
         const { type, state } = port;
         if (type === 'input') {
@@ -32,7 +40,6 @@ class MIDI {
             this.teardownOutput(port);
           }
         }
-
       }
     } catch (error) {
       console.error({error})
@@ -42,13 +49,10 @@ class MIDI {
 
   initializeInput(input) {
     this.sendEvent(input);
-    this.inputs[input.id] =input;
+    this.inputs[input.id] = input;
     input.onmidimessage = ({ data }) => {
       this.sendEvent(input, data);
     }
-    // input.addEventListener('midimessage', ({ data }) => {
-    //   this.sendEvent(input, data);
-    // })
   }
 
   initializeOutput(output) {

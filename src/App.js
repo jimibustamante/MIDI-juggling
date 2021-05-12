@@ -2,15 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import './styles/App.scss'
 import MIDI from './lib/MIDI';
 import Piano from './components/Piano';
+import MidiSelect from './components/MidiSelect';
 import { MIDInumberToNote, MIDInumberToFrequency } from './lib/helpers';
 import * as Tone from 'tone';
 
 function App() {
   const MIDIRef = useRef(null);
   const synth = useRef(null);
-  const keyTimer = useRef(null);
   const [audioReady, setAudioReady] = useState(false);
   const [pressedKeys, setPressedKey] = useState([]);
+  const [MIDIinputs, setMIDIinputs] = useState([]);
 
   const eventHandler = ({ device, a, b, type }) => {
     if (type === 'note_on') {
@@ -25,24 +26,22 @@ function App() {
 
   const onKeyClicked = (midiNumber, event) => {
     if (audioReady) {
-      // const note = MIDInumberToNote(midiNumber);
-      // synth.current.triggerAttackRelease([note], 0.5);
       addKey(midiNumber);
       setTimeout(() => {
         removeKey(midiNumber);
-      }, 500);
+      }, 400);
 
     } else {
-      Tone.start().then(() => {
-        setAudioReady(true);
-        console.debug('Tone started');
-      });
+      startAudioContext();
     }
   }
 
+  const onInputsReady = (inputs) => {
+    setMIDIinputs(inputs);
+  }
   useEffect(() => {
-    MIDIRef.current = new MIDI(eventHandler);
-    MIDIRef.current.initialize();
+    MIDIRef.current = new MIDI(eventHandler, onInputsReady);
+    MIDIRef.current.initialize()
     synth.current = new Tone.PolySynth(Tone.Synth).toDestination();
   }, []);
 
@@ -80,13 +79,23 @@ function App() {
     })
   };
 
+  const startAudioContext = () => {
+    Tone.start().then(() => {
+      setAudioReady(true);
+      console.debug('Tone started');
+    });
+  };
+
   return (
-    <div className="App">
-      <h1>MIDI</h1>
+    <div className='App'>
+      <h1>MIDI Juggling</h1>
+      {MIDIinputs && (
+        <MidiSelect MIDIinputs={MIDIinputs} startAudioContext={startAudioContext} />
+      )}
       <Piano pressedKeys={pressedKeys} onKeyClicked={onKeyClicked} />
       <div className='keys'>
         {pressedKeys?.map((key) => {
-          const { note, freq } = key;
+          const { note } = key;
           return (
             <div key={note} className='note'>
               {note}

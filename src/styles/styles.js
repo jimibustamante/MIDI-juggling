@@ -52,3 +52,7 @@ export const PianoKey = styled.div`
     }
   }}
 `;
+
+export const MidiSelect = styled.div`
+
+`;
