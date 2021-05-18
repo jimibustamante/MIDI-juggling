@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { MidiSelect as MidiSelectStyles } from '../styles/styles';
+import { MidiSelect as MidiSelectStyles } from '../styles';
 
 function MidiSelect({ MIDIinputs, startAudioContext }) {
   const [value, setValue] = useState('none');
@@ -17,7 +17,6 @@ function MidiSelect({ MIDIinputs, startAudioContext }) {
         {inputsList.map((input) => 
           <option key={input[0]} value={input[0]} >{input[1].name}</option>          
         )}
-        {/* {MIDIinputs.map()} */}
       </select>
     </MidiSelectStyles>
   )

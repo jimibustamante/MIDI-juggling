@@ -1,19 +1,55 @@
 import styled from 'styled-components';
 
+export const defaultTheme = {
+  mainColor: '#FFFFFF',
+  secondaryColor: '#D0A39B',
+  thirdColor: '#97726F',
+  darkColor: '#362A2D',
+}
+
+const standardPadding = '1rem 2rem';
+
+export const App = styled.div`
+  background-color: ${defaultTheme.mainColor};
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  padding: 2rem;
+  box-sizing: border-box;
+`;
+
+export const Main = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const ChordInfo = styled.div`
+  padding: ${standardPadding};
+  .keys {
+    padding: 5px 0;
+    align-items: center;
+    .note {
+    }
+  }
+`;
+
+export const Title = styled.h1`
+  color: ${props => props.theme.darkColor};
+`;
+
 export const PianoContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
   overflow-x: scroll;
-  padding: 1rem 2rem;
-  --white-width: 2rem;
-  --black-width: 1.5rem;
+  padding: ${standardPadding};
+  --white-width: 1.6rem;
+  --black-width: 1.2rem;
   > * {
     flex-shrink: 0;
     box-sizing: border-box;
-    /* &.pressed {
-      background: #fc8621 !important;
-    } */
     &.B, &.D:not(.black), &.E:not(.black), &.G:not(.black), &.A:not(.black) {
       margin-left: calc(var(--black-width) * -1);
     }
@@ -47,12 +83,12 @@ export const PianoKey = styled.div`
   ${props => {
     if (props.pressed) {
       return (
-        'background: #fc8621 !important;'
+        `background: ${props.theme.secondaryColor} !important;`
       )
     }
   }}
 `;
 
 export const MidiSelect = styled.div`
-
+  
 `;

@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from 'react';
-import { PianoContainer, PianoKey } from '../styles/styles';
+import { PianoContainer, PianoKey } from '../styles';
 import { MIDInumberToNote } from '../lib/helpers';
 
 // Piano start with A0 which is the lowest MIDI number supported (21), and it finished with C8 (108)

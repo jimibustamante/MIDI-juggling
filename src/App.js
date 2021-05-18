@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './styles/App.scss'
 import MIDI from './lib/MIDI';
 import Piano from './components/Piano';
+import ChordInfo from './components/ChordInfo';
 import MidiSelect from './components/MidiSelect';
 import { MIDInumberToNote, MIDInumberToFrequency } from './lib/helpers';
+import { ThemeProvider } from 'styled-components';
+import { App as AppStyle, Main, defaultTheme, Title as TitleStyle } from './styles';
 import * as Tone from 'tone';
 
 function App() {
   const MIDIRef = useRef(null);
+  const player = useRef(null);
   const synth = useRef(null);
   const [audioReady, setAudioReady] = useState(false);
   const [pressedKeys, setPressedKey] = useState([]);
@@ -41,8 +44,10 @@ function App() {
   }
   useEffect(() => {
     MIDIRef.current = new MIDI(eventHandler, onInputsReady);
-    MIDIRef.current.initialize()
-    synth.current = new Tone.PolySynth(Tone.Synth).toDestination();
+    MIDIRef.current.initialize();
+    player.current = new Tone.Player()
+    synth.current = new Tone.PolySynth(Tone.FMSynth).toDestination();
+    synth.current.volume.value = -15;
   }, []);
 
   const addKey = (MIDInumber) => {
@@ -87,23 +92,18 @@ function App() {
   };
 
   return (
-    <div className='App'>
-      <h1>MIDI Juggling</h1>
-      {MIDIinputs && (
-        <MidiSelect MIDIinputs={MIDIinputs} startAudioContext={startAudioContext} />
-      )}
-      <Piano pressedKeys={pressedKeys} onKeyClicked={onKeyClicked} />
-      <div className='keys'>
-        {pressedKeys?.map((key) => {
-          const { note } = key;
-          return (
-            <div key={note} className='note'>
-              {note}
-            </div>
-          )
-        })}
-      </div>
-    </div>
+    <ThemeProvider theme={defaultTheme}>
+      <AppStyle className='App'>
+        <Main>
+          <TitleStyle>MIDI Juggling</TitleStyle>
+          {MIDIinputs && (
+            <MidiSelect MIDIinputs={MIDIinputs} startAudioContext={startAudioContext} />
+          )}
+          <Piano pressedKeys={pressedKeys} onKeyClicked={onKeyClicked} />
+        </Main>
+        <ChordInfo pressedKeys={pressedKeys} />
+      </AppStyle>
+    </ThemeProvider>
   );
 }
 

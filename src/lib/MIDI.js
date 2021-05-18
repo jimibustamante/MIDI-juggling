@@ -42,8 +42,8 @@ class MIDI {
         }
       }
     } catch (error) {
-      console.error({error})
-      alert("You don't have access to MIDI :( You may try another browser instead")
+      console.error({error});
+      alert("You don't have access to MIDI :( You may try another browser instead");
     }
   }
 
